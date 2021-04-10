@@ -26,17 +26,24 @@ public class Snake : MonoBehaviour {
 	private int t_Count;
 	private float h, v;
 
+	public UnityEngine.UI.Text Text;
+	public UnityEngine.UI.Text TextLevel;
+	public static int scoreValue = 0;
+	public static int levelValue = 1;
+	public GameObject Wall;
+	public GameObject RandomWall;
 	public static int tailCount;
 	public static bool lose;
 	
 	
-	public GameObject b_up;
-	public GameObject b_down;
-	public GameObject b_right;
-	public GameObject b_left;
+	public static bool b_up = false;
+	public static bool b_down = false;
+	public static bool b_right = false;
+	public static bool b_left = false;
 
 	void Start () 
 	{
+		Wall.SetActive(false);
 		lose = false;
 		tailCount = 1;
 		t_Count = tailCount;
@@ -86,8 +93,49 @@ public class Snake : MonoBehaviour {
 		}
 	}
 
+	IEnumerator AddWalls()
+	{
+		GameObject clone = Instantiate(RandomWall) as GameObject;
+		clone.transform.position = pos[Random.Range(0, size), Random.Range(0, size)];
+		yield return new WaitForSeconds(timeoutBonus);
+		if (!lose) StartCoroutine(AddWalls());
+	}
+
 	void Update () 
 	{
+		if (scoreValue == 1)
+        {
+			levelValue = 4;
+			Wall.SetActive(false);
+			levelValue += 1;
+			TextLevel.text = levelValue.ToString();
+			scoreValue = 0;
+			Text.text = scoreValue.ToString();
+			if (levelValue == 2)
+			{
+				Wall.SetActive(false);
+				timeoutMove = 0.02f;
+			}
+			if (levelValue == 3)
+            {
+				Wall.SetActive(true);
+				timeoutMove = 0.05f;
+			}
+			if (levelValue == 4)
+			{
+				Wall.SetActive(true);
+				timeoutMove = 0.02f;
+			}
+			if (levelValue == 5)
+			{
+				Wall.SetActive(false);
+				StartCoroutine(AddWalls());
+			}
+			
+
+
+		}
+
 		curTimeout += Time.deltaTime;
 		if (curTimeout > timeoutMove) 
 		{
@@ -97,6 +145,8 @@ public class Snake : MonoBehaviour {
 
 		if(t_Count != tailCount)
 		{
+			scoreValue += 1;
+			Text.text = scoreValue.ToString();
 			GameObject clone = Instantiate(_tail) as GameObject;
 			clone.name = "Tail_" + tail.Count;
 			clone.transform.position = tail_last;
@@ -104,25 +154,29 @@ public class Snake : MonoBehaviour {
 		}
 		t_Count = tailCount;
 
-		if(Input.GetKeyDown(left))
+		if(b_left == true)
 		{
 			h = -shift;
 			v = 0;
+			b_left = !b_left;
 		}
-		else if(Input.GetKeyDown(right)) 
+		else if(b_right == true) 
 		{
 			h = shift;
 			v = 0;
+			b_right = !b_right;
 		}
-		else if(Input.GetKeyDown(down)) 
+		else if(b_down == true) 
 		{
 			v = -shift;
 			h = 0;
+			b_down = !b_down;
 		}
-		else if(Input.GetKeyDown(up)) 
+		else if(b_up == true) 
 		{
 			v = shift;
 			h = 0;
+			b_up = !b_up;
 		}
 
 		if(lose)
