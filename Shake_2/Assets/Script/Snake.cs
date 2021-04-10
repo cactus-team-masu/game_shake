@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿// NULLcode Studio © 2015
+// null-code.ru
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Snake : MonoBehaviour
-{
+public class Snake : MonoBehaviour {
 
 	public KeyCode left = KeyCode.A;
 	public KeyCode right = KeyCode.D;
@@ -26,51 +28,57 @@ public class Snake : MonoBehaviour
 
 	public static int tailCount;
 	public static bool lose;
+	
+	
+	public GameObject b_up;
+	public GameObject b_down;
+	public GameObject b_right;
+	public GameObject b_left;
 
-	void Start()
+	void Start () 
 	{
 		lose = false;
 		tailCount = 1;
 		t_Count = tailCount;
 		tail = new List<GameObject>();
 		tail.Add(this.gameObject);
-		float posX = -shift * size / 2 - shift;
+		float posX = -shift*size/2-shift;
 		float posY = Mathf.Abs(posX);
 		float Xreset = posX;
 		pos = new Vector3[size, size];
-		for (int y = 0; y < size; y++)
+		for(int y = 0; y < size; y++)
 		{
 			posY -= shift;
-			for (int x = 0; x < size; x++)
+			for(int x = 0; x < size; x++)
 			{
 				posX += shift;
-				pos[x, y] = new Vector3(posX, posY, 0);
+				pos[x,y] = new Vector3(posX, posY, 0);
 			}
 			posX = Xreset;
 		}
 
-		tail[0].transform.position = pos[size / 2, size / 2];
-		StartCoroutine(AddBonus());
+		tail[0].transform.position = pos[size/2, size/2];
+		StartCoroutine (AddBonus());
 	}
 
 	IEnumerator AddBonus()
 	{
 		GameObject clone = Instantiate(_bonus) as GameObject;
 		clone.transform.position = pos[Random.Range(0, size), Random.Range(0, size)];
-		yield return new WaitForSeconds(timeoutBonus);
-		if (!lose) StartCoroutine(AddBonus());
+		yield return new WaitForSeconds (timeoutBonus);
+		if(!lose) StartCoroutine (AddBonus());
 	}
 
 	void Move(int count)
 	{
-		tail_last = tail[tail.Count - 1].transform.position;
+		tail_last = tail[tail.Count-1].transform.position;
 
 		tail_pos = tail[0].transform.position;
 		tail[0].transform.position = new Vector3(tail_pos.x + h, tail_pos.y + v, 0);
 
 		Vector3 tmp = Vector3.zero;
 
-		for (int j = 1; j < count; j++)
+		for(int j = 1; j < count; j++)
 		{
 			tmp = tail[j].transform.position;
 			tail[j].transform.position = tail_pos;
@@ -78,16 +86,16 @@ public class Snake : MonoBehaviour
 		}
 	}
 
-	void Update()
+	void Update () 
 	{
 		curTimeout += Time.deltaTime;
-		if (curTimeout > timeoutMove)
+		if (curTimeout > timeoutMove) 
 		{
 			curTimeout = 0;
 			Move(tailCount);
 		}
 
-		if (t_Count != tailCount)
+		if(t_Count != tailCount)
 		{
 			GameObject clone = Instantiate(_tail) as GameObject;
 			clone.name = "Tail_" + tail.Count;
@@ -96,37 +104,37 @@ public class Snake : MonoBehaviour
 		}
 		t_Count = tailCount;
 
-		if (Input.GetKeyDown(left))
+		if(Input.GetKeyDown(left))
 		{
 			h = -shift;
 			v = 0;
 		}
-		else if (Input.GetKeyDown(right))
+		else if(Input.GetKeyDown(right)) 
 		{
 			h = shift;
 			v = 0;
 		}
-		else if (Input.GetKeyDown(down))
+		else if(Input.GetKeyDown(down)) 
 		{
 			v = -shift;
 			h = 0;
 		}
-		else if (Input.GetKeyDown(up))
+		else if(Input.GetKeyDown(up)) 
 		{
 			v = shift;
 			h = 0;
 		}
 
-		if (lose)
+		if(lose)
 		{
 			Debug.Log("Вы проиграли!");
 			enabled = false;
 		}
 	}
 
-	void OnCollisionEnter2D(Collision2D other)
+	void OnCollisionEnter2D(Collision2D other) 
 	{
-		if (other.collider.tag == "Player")
+		if(other.collider.tag == "Player")
 		{
 			lose = true;
 		}
