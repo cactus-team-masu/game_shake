@@ -5,6 +5,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+using UnityEngine.SceneManagement;
+
 public class Snake : MonoBehaviour {
 
 	public KeyCode left = KeyCode.A;
@@ -40,6 +42,8 @@ public class Snake : MonoBehaviour {
 	public static bool b_down = false;
 	public static bool b_right = false;
 	public static bool b_left = false;
+	
+	public static bool restart = true;
 
 	void Start () 
 	{
@@ -103,87 +107,92 @@ public class Snake : MonoBehaviour {
 
 	void Update () 
 	{
-		if (scoreValue == 1)
-        {
-			levelValue = 4;
-			Wall.SetActive(false);
-			levelValue += 1;
-			TextLevel.text = levelValue.ToString();
-			scoreValue = 0;
-			Text.text = scoreValue.ToString();
-			if (levelValue == 2)
-			{
-				Wall.SetActive(false);
-				timeoutMove = 0.02f;
-			}
-			if (levelValue == 3)
-            {
-				Wall.SetActive(true);
-				timeoutMove = 0.05f;
-			}
-			if (levelValue == 4)
-			{
-				Wall.SetActive(true);
-				timeoutMove = 0.02f;
-			}
-			if (levelValue == 5)
-			{
-				Wall.SetActive(false);
-				StartCoroutine(AddWalls());
-			}
+		//if (restart == true)
+		//{
 			
+			if (scoreValue == 10)
+			{
+				//levelValue = 4;
+				Wall.SetActive(false);
+				levelValue += 1;
+				TextLevel.text = levelValue.ToString();
+				scoreValue = 0;
+				Text.text = scoreValue.ToString();
+				timeoutMove = 0.05f;
+				if (levelValue == 2)
+				{
+					Wall.SetActive(true);
+					//timeoutMove = 0.02f;
+					timeoutMove = 0.05f;
+				}
+				if (levelValue == 3)
+				{
+					Wall.SetActive(false);
+					//timeoutMove = 0.05f;
+					timeoutMove = 0.02f;
+				}
+				if (levelValue == 4)
+				{
+					Wall.SetActive(true);
+					timeoutMove = 0.02f;
+				}
+				if (levelValue == 5)
+				{
+					Wall.SetActive(false);
+					StartCoroutine(AddWalls());
+				}
+				
+			}
 
+			curTimeout += Time.deltaTime;
+			if (curTimeout > timeoutMove) 
+			{
+				curTimeout = 0;
+				Move(tailCount);
+			}
 
-		}
+			if(t_Count != tailCount)
+			{
+				scoreValue += 1;
+				Text.text = scoreValue.ToString();
+				GameObject clone = Instantiate(_tail) as GameObject;
+				clone.name = "Tail_" + tail.Count;
+				clone.transform.position = tail_last;
+				tail.Add(clone);
+			}
+			t_Count = tailCount;
 
-		curTimeout += Time.deltaTime;
-		if (curTimeout > timeoutMove) 
-		{
-			curTimeout = 0;
-			Move(tailCount);
-		}
+			if(b_left == true)
+			{
+				h = -shift;
+				v = 0;
+				b_left = !b_left;
+			}
+			else if(b_right == true) 
+			{
+				h = shift;
+				v = 0;
+				b_right = !b_right;
+			}
+			else if(b_down == true) 
+			{
+				v = -shift;
+				h = 0;
+				b_down = !b_down;
+			}
+			else if(b_up == true) 
+			{
+				v = shift;
+				h = 0;
+				b_up = !b_up;
+			}
 
-		if(t_Count != tailCount)
-		{
-			scoreValue += 1;
-			Text.text = scoreValue.ToString();
-			GameObject clone = Instantiate(_tail) as GameObject;
-			clone.name = "Tail_" + tail.Count;
-			clone.transform.position = tail_last;
-			tail.Add(clone);
-		}
-		t_Count = tailCount;
-
-		if(b_left == true)
-		{
-			h = -shift;
-			v = 0;
-			b_left = !b_left;
-		}
-		else if(b_right == true) 
-		{
-			h = shift;
-			v = 0;
-			b_right = !b_right;
-		}
-		else if(b_down == true) 
-		{
-			v = -shift;
-			h = 0;
-			b_down = !b_down;
-		}
-		else if(b_up == true) 
-		{
-			v = shift;
-			h = 0;
-			b_up = !b_up;
-		}
-
-		if(lose)
-		{
-			Debug.Log("Вы проиграли!");
-			enabled = false;
-		}
+			if(lose)
+			{
+				Debug.Log("Вы проиграли!");
+				enabled = false;
+			}
+		//}
 	}
 
 	void OnCollisionEnter2D(Collision2D other) 
@@ -191,6 +200,9 @@ public class Snake : MonoBehaviour {
 		if(other.collider.tag == "Player")
 		{
 			lose = true;
+			//restart = false;
+			SceneManager.LoadScene(2);
+			levelValue = 1;
 		}
 	}
 }

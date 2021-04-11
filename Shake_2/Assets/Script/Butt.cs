@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Butt : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public GameObject panel_start;
+	// Start is called before the first frame update
     void Start()
     {
         
@@ -18,17 +19,25 @@ public class Butt : MonoBehaviour
     public void Button_leftPressed()
     {
         Snake.b_left = true;
+		//Snake.restart = true;
+		panel_start.SetActive(false);
     }
     public void Button_rightPressed()
     {
         Snake.b_right = true;
+		//Snake.restart = true;
+		panel_start.SetActive(false);
     }
     public void Button_upPressed()
     {
         Snake.b_up = true;
+		//Snake.restart = true;
+		panel_start.SetActive(false);
     }
     public void Button_downPressed()
     {
         Snake.b_down = true;
+		//Snake.restart = true;
+		panel_start.SetActive(false);
     }
 }
