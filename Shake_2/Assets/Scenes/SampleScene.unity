@@ -3777,7 +3777,7 @@ PrefabInstance:
     - target: {fileID: 884369684126537107, guid: f5cc942f217f5c947a2fc9065f86646c,
         type: 3}
       propertyPath: timeoutBonus
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5548774236253751719, guid: f5cc942f217f5c947a2fc9065f86646c,
         type: 3}

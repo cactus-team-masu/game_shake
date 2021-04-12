@@ -110,9 +110,9 @@ public class Snake : MonoBehaviour {
 		//if (restart == true)
 		//{
 			
-			if (scoreValue == 1)
+			if (scoreValue == 10)
 			{
-				levelValue = 5;
+				//levelValue = 5;
 				Wall.SetActive(false);
 				levelValue += 1;
 				TextLevel.text = levelValue.ToString();
@@ -140,10 +140,12 @@ public class Snake : MonoBehaviour {
 				{
 					Wall.SetActive(false);
 					StartCoroutine(AddWalls());
+					timeoutMove = 0.02f;
 				}
 				if (levelValue == 6)
 				{
 					SceneManager.LoadScene(3);
+					levelValue = 1;
 				}
 				
 			}
